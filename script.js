@@ -19,4 +19,120 @@ const categoriesButton = (data) => {
   });
 };
 
+const ShowDataCards = async () => {
+  const response = await fetch(
+    `https://openapi.programming-hero.com/api/videos/category/1000`
+  );
+  const data = await response.json();
+  console.log(data.data);
+
+  const card_section = document.getElementById("card_section");
+
+  data.data.forEach((card) => {
+    console.log(card);
+    const div = document.createElement("div");
+    const authorName = card.authors
+      .map((author) => `<p class="text-[14px] ml-2">${author.profile_name}</p>`)
+      .join("");
+
+    const authorPic = card.authors
+      .map(
+        (author) => `<img
+    class="w-[40px] h-[40px] rounded-full mt-4"
+    src="${author.profile_picture}"
+    alt=""
+  />`
+      )
+      .join("");
+
+    const authorVerified = card.authors
+      .map((author) => {
+        if (author.verified === true) {
+          return ` <img
+        class="w-[20px] h-[20px] ml-1"
+        src="images/verified.png"
+        alt=""
+      />
+  `;
+        } else {
+          return "";
+        }
+      })
+      .join("");
+
+    const videoViews = card.others.views;
+    const postedDate = card.others.posted_date;
+    const formatDate = PostTimeConvert(postedDate);
+
+    div.innerHTML = `
+    <div>
+    <!-- photo  -->
+    <div>
+      <div class="relative">
+        <img
+          class="w-[312px] h-[200px] rounded-lg"
+          src='${card.thumbnail}'
+          alt=""
+        />
+      </div>
+      ${
+        formatDate
+          ? ` <div
+      class="w-[109px] flex absolute mt-[-52px] ml-[200px] text-white bg-[#171717] rounded-lg p-2"
+    >
+      <p class="text-[12px] ">${formatDate}</p>
+    </div>`
+          : ""
+      }
+    </div>
+
+    <!-- info   -->
+    <div class="flex flex-row">
+      <div>
+       ${authorPic}
+      </div>
+      <div class="cursor-pointer">
+        <!-- photo and title   -->
+        <div class="flex flex-row">
+          <div class="w-64 ml-2 mt-3">
+            <h2 class="text-[16px] font-bold">
+             ${card.title}
+            </h2>
+          </div>
+        </div>
+        <div class="flex flex-row">
+        ${authorName}
+         ${authorVerified}
+        </div>
+        <p class="ml-2 text-[14px]">${videoViews} views</p>
+      </div>
+    </div>
+  </div>
+    `;
+
+    card_section.appendChild(div);
+  });
+};
+
+const PostTimeConvert = (time) => {
+  console.log(time);
+  const hours = Math.floor(time / 3600);
+  const minutes = Math.floor((time % 3600) / 60);
+
+  let result = "";
+  if (hours > 0) {
+    result += `${hours} ${hours === 1 ? "hr" : "hrs"}`;
+  }
+
+  if (minutes > 0) {
+    if (result.length > 0) {
+      result += " ";
+    }
+    result += `${minutes} ${"min ago"}`;
+  }
+
+  return result;
+};
+
 fetchCatergories();
+ShowDataCards();
