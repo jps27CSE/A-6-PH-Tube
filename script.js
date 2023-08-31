@@ -8,25 +8,27 @@ const fetchCatergories = async () => {
 
 const categoriesButton = (data) => {
   const categoriesSection = document.getElementById("categories_section");
-
+  console.log(data);
   data.forEach((category) => {
     const div = document.createElement("div");
     div.innerHTML = `
-    <button class="btn mr-2">${category.category}</button>
+    <button class="btn mr-2" onclick="getCategory('${category.category_id}')">${category.category}</button>
     `;
 
     categoriesSection.appendChild(div);
   });
 };
 
-const ShowDataCards = async () => {
+const ShowDataCards = async (category = 1000) => {
   const response = await fetch(
-    `https://openapi.programming-hero.com/api/videos/category/1000`
+    `https://openapi.programming-hero.com/api/videos/category/${category}`
   );
   const data = await response.json();
   console.log(data.data);
 
   const card_section = document.getElementById("card_section");
+
+  card_section.textContent = "";
 
   data.data.forEach((card) => {
     console.log(card);
@@ -132,6 +134,10 @@ const PostTimeConvert = (time) => {
   }
 
   return result;
+};
+
+const getCategory = async (data) => {
+  ShowDataCards(data);
 };
 
 fetchCatergories();
