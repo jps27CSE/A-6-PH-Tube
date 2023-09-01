@@ -14,7 +14,7 @@ const categoriesButton = (data) => {
   data.forEach((category) => {
     const div = document.createElement("div");
     div.innerHTML = `
-    <button class="btn mr-2" onclick="getCategory('${category.category_id}')">${category.category}</button>
+    <button class="btn mr-2 capitalize" onclick="getCategory('${category.category_id}')">${category.category}</button>
     `;
 
     categoriesSection.appendChild(div);
