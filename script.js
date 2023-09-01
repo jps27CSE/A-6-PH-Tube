@@ -1,3 +1,6 @@
+let sortDataView = false;
+let categoryID = 1000;
+
 const fetchCatergories = async () => {
   const response = await fetch(
     `https://openapi.programming-hero.com/api/videos/categories`
@@ -25,6 +28,15 @@ const ShowDataCards = async (category = 1000) => {
   const data = await response.json();
   const card_section = document.getElementById("card_section");
   const nodata = document.getElementById("no_data");
+
+  if (sortDataView) {
+    data.data.sort((a, b) => {
+      const viewsA = parseInt(a.others.views);
+      const viewsB = parseInt(b.others.views);
+      return viewsB - viewsA;
+    });
+  }
+
   card_section.textContent = "";
   nodata.textContent = "";
   const countofData = data.data.length;
@@ -67,7 +79,7 @@ const ShowDataCards = async (category = 1000) => {
       const formatDate = PostTimeConvert(postedDate);
 
       div.innerHTML = `
-        <div>
+        <div class="cursor-pointer">
           <!-- photo  -->
           <div>
             <div class="relative">
@@ -93,7 +105,7 @@ const ShowDataCards = async (category = 1000) => {
             <div>
               ${authorPic}
             </div>
-            <div class="cursor-pointer">
+            <div >
               <!-- photo and title   -->
               <div class="flex flex-row">
                 <div class="w-64 ml-2 mt-3">
@@ -150,7 +162,13 @@ const PostTimeConvert = (time) => {
 };
 
 const getCategory = async (data) => {
-  ShowDataCards(data);
+  categoryID = data;
+  ShowDataCards(categoryID);
+};
+
+const sortFunction = () => {
+  sortDataView = true;
+  ShowDataCards(categoryID);
 };
 
 fetchCatergories();
